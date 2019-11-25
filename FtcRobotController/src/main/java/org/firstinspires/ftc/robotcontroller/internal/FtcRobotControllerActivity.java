@@ -232,7 +232,7 @@ public class FtcRobotControllerActivity extends Activity
 
   /**
    * There are cases where a permission may be revoked and the system restart will restart the
-   * FtcRobotControllerActivity, instead of the launch activity.  Detect when that happens, and throw
+   * CustomFtcRcActivity, instead of the launch activity.  Detect when that happens, and throw
    * the device back to the permission validator activity.
    */
   protected boolean enforcePermissionValidator() {

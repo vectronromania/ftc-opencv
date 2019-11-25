@@ -1,0 +1,3 @@
+/Users/cezarmathe/Work/ftc-opencv/TeamCode/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/cezarmathe/Work/ftc-opencv/TeamCode/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/cezarmathe/Work/ftc-opencv/TeamCode/.externalNativeBuild/cmake/debug/armeabi-v7a/CMakeFiles/libteamcode_native.dir
