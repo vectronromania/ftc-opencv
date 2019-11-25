@@ -1,9 +1,0 @@
-# ninja log v5
-0	1246	0	CMakeFiles/libteamcode_native.dir/src/main/cpp/teamcode.cpp.o	31e88fa430ce62d8
-0	1268	0	CMakeFiles/libteamcode_native.dir/src/main/cpp/teamcode_glue.cpp.o	9c3663f0f78c84db
-0	76	0	CMakeFiles/libteamcode_native.dir/src/main/cpp/lib.cpp.o	ecef69c7f6923459
-76	284	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/liblibteamcode_native.so	6e950ca8f0db2779
-0	169	0	CMakeFiles/libteamcode_native.dir/src/main/cpp/lib.cpp.o	ecef69c7f6923459
-169	378	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/liblibteamcode_native.so	6e950ca8f0db2779
-0	140	0	CMakeFiles/libteamcode_native.dir/src/main/cpp/lib.cpp.o	ecef69c7f6923459
-140	344	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/liblibteamcode_native.so	6e950ca8f0db2779
