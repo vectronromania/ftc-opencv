@@ -10,4 +10,6 @@ public class TeamCodeNativeGlue {
      * @return 2 + 2(hopefully 4)
      */
     public static native int testFunction();
+
+    public static native void grayscaleImage(long imageAddress);
 }

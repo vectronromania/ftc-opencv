@@ -12,6 +12,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
 /**
@@ -32,6 +33,11 @@ public class CustomFtcRcActivity
      * Custom OpenCV CameraView
      */
     private JavaCameraView mCameraView;
+
+    /**
+     * OpenCV image object
+     */
+    private Mat matRGBA;
 
 
     private BaseLoaderCallback mBaseLoaderCallback = new BaseLoaderCallback(this) {
@@ -62,6 +68,7 @@ public class CustomFtcRcActivity
     @Override
     public void onCameraViewStarted(int width, int height) {
         Log.d(TAG, "onCameraViewStarted() called with: width = [" + width + "], height = [" + height + "]");
+        matRGBA = new Mat(width, height, CvType.CV_8UC4);
     }
 
     @Override
@@ -73,7 +80,9 @@ public class CustomFtcRcActivity
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Log.d(TAG, "onCameraFrame() called with: inputFrame = [" + inputFrame + "]");
-        return inputFrame.rgba();
+        matRGBA = inputFrame.rgba();
+        TeamCodeNativeGlue.grayscaleImage(matRGBA.getNativeObjAddr());
+        return matRGBA;
     }
 
     @Override
