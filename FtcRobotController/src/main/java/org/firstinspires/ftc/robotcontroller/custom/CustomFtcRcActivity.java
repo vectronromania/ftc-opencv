@@ -46,8 +46,8 @@ public class CustomFtcRcActivity
                     System.loadLibrary("libteamcode_native");
                     Log.i(TAG, "onManagerConnected: loaded custom native teamcode library");
 
-                    if (TeamCodeNativeGlue.testFunction() != 4)
-                        throw new AssertionError("teamcode test function did not return 2 + 2 = 4");
+//                    if (TeamCodeNativeGlue.testFunction() != 4)
+//                        throw new AssertionError("teamcode test function did not return 2 + 2 = 4");
 
                     mCameraView.enableView();
                     break;

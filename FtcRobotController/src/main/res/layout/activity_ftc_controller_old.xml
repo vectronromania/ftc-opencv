@@ -96,11 +96,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
 
-    <org.firstinspires.android.JavaCameraView
-        android:id="@+id/custom_ftc_rc_camera_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-
     <TextView
       android:id="@+id/textNetworkConnectionStatus"
       android:layout_width="match_parent"
