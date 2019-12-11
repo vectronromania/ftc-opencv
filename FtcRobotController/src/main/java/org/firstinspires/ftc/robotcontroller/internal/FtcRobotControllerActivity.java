@@ -49,6 +49,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -100,6 +101,7 @@ import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogServic
 import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.onbotjava.OnBotJavaHelperImpl;
 import org.firstinspires.ftc.onbotjava.OnBotJavaProgrammingMode;
+import org.firstinspires.ftc.robotcontroller.custom.TeamCodeNativeGlue;
 import org.firstinspires.ftc.robotcore.external.navigation.MotionDetection;
 import org.firstinspires.ftc.robotcore.internal.hardware.android.AndroidBoard;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManagerFactory;
@@ -118,13 +120,24 @@ import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
 import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
 import org.firstinspires.ftc.robotserver.internal.programmingmode.ProgrammingModeManager;
 import org.firstinspires.inspection.RcInspectionActivity;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCameraView;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings("WeakerAccess")
-public class FtcRobotControllerActivity extends Activity
+public class FtcRobotControllerActivity extends Activity implements CameraBridgeViewBase.CvCameraViewListener2
   {
+
+    static {
+      System.loadLibrary("libteamcode_native");
+    }
   public static final String TAG = "RCActivity";
   public String getTag() { return TAG; }
 
@@ -380,6 +393,11 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
       initWifiMute(true);
     }
+
+    // ===========OPENCV================
+    mCameraView = findViewById(R.id.custom_ftc_rc_camera_view);
+    mCameraView.setVisibility(View.VISIBLE);
+    mCameraView.setCvCameraViewListener(this);
   }
 
   protected UpdateUI createUpdateUI() {
@@ -425,6 +443,16 @@ public class FtcRobotControllerActivity extends Activity
   protected void onResume() {
     super.onResume();
     RobotLog.vv(TAG, "onResume()");
+
+    if (!OpenCVLoader.initDebug()) {
+      if (OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mBaseLoaderCallback)) {
+        Log.i(TAG, "onResume: async init success");
+      } else {
+        Log.w(TAG, "onResume: async init failed");
+      }
+    } else {
+      Log.i(TAG, "onResume: OpenCv library found inside the package, using it");
+    }
   }
 
   @Override
@@ -807,4 +835,59 @@ public class FtcRobotControllerActivity extends Activity
       wifiMuteStateMachine.consumeEvent(WifiMuteEvent.USER_ACTIVITY);
     }
   }
+
+
+//  ======================OPENCV STUFF=========================
+    /**
+     * Custom OpenCV CameraView
+     */
+    private JavaCameraView mCameraView;
+
+    /**
+     * OpenCV image object
+     */
+    private Mat matRGBA;
+    private BaseLoaderCallback mBaseLoaderCallback = new BaseLoaderCallback(this) {
+      @Override
+      public void onManagerConnected(int status) {
+        super.onManagerConnected(status);
+        Log.d(TAG, "mBaseLoaderCallback.onManagerConnected() called with: status = [" + status + "]");
+
+        switch (status) {
+          case LoaderCallbackInterface.SUCCESS:
+            Log.i(TAG, "onManagerConnected: loaded OpenCV");
+            System.loadLibrary("libteamcode_native");
+            Log.i(TAG, "onManagerConnected: loaded custom native teamcode library");
+
+//                    if (TeamCodeNativeGlue.testFunction() != 4)
+//                        throw new AssertionError("teamcode test function did not return 2 + 2 = 4");
+
+            mCameraView.enableView();
+            break;
+          default:
+            Log.e(TAG, "onManagerConnected: could not load OpenCV");
+            break;
+        }
+      }
+    };
+
+    @Override
+    public void onCameraViewStarted(int width, int height) {
+      Log.d(TAG, "onCameraViewStarted() called with: width = [" + width + "], height = [" + height + "]");
+      matRGBA = new Mat(width, height, CvType.CV_8UC4);
+    }
+
+    @Override
+    public void onCameraViewStopped() {
+      Log.d(TAG, "onCameraViewStopped() called");
+
+    }
+
+    @Override
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+      Log.d(TAG, "onCameraFrame() called with: inputFrame = [" + inputFrame + "]");
+      matRGBA = inputFrame.rgba();
+      TeamCodeNativeGlue.grayscaleImage(matRGBA.getNativeObjAddr());
+      return matRGBA;
+    }
 }
